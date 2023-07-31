@@ -11,7 +11,7 @@ export const CadastroWrapper = styled.div`
 
 export const ContainerCadastro = styled.div`
   width: 100%;
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
   padding: 20px;
   border-radius: 5px;
   background-color: #fff;
@@ -19,7 +19,7 @@ export const ContainerCadastro = styled.div`
   box-shadow: rgba(0, 0, 1, 0.1) 0px 2px 0px 4px;
 
   h1 {
-    font-size: 24px;
+    font-size: 30px;
     margin-bottom: 20px;
     text-align: center;
     color: black;
@@ -31,7 +31,7 @@ export const LoginLink = styled(Link)`
   margin-bottom: 20px;
   color: red;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 15px;
 
   &:hover {
     text-decoration: underline;

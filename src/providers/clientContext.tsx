@@ -76,44 +76,24 @@ interface clientAuthentication {
 export interface infoContacts {
 
   id: number;
-
-
   fullname: string;
-
-
   email: string;
-
-
   password: string;
-
-
   zipCode: string;
-
-
   city: string;
-
-
   street: string;
-
-
   state: string;
-
-
   country: string;
-
-
   telephone: string;
-
-
   admin: boolean;
-
-
   createdAt?: string | Date;
 }
 
 
 export const ClientProvider = ({ children }: iCadastroChildrenProps) => {
   const navigate = useNavigate();
+
+
   const [useLogin, setUserLogin] = useState({} as iLoginUser);
   const [clientInfo, setClientInfo] = useState({} as infoClient[]);
   const [clientsGet, setClientsGet] = useState([]);
@@ -144,7 +124,7 @@ export const ClientProvider = ({ children }: iCadastroChildrenProps) => {
           Authorization: `Bearer ${tokenClient}`
         }
       });
-  
+
       setContactsGet(res.data);
     } catch (err) {
       console.error(err);
@@ -152,129 +132,123 @@ export const ClientProvider = ({ children }: iCadastroChildrenProps) => {
 
   };
 
-  
-
-const functionRegister = async (data: IregisterForm) => {
-  try {
-    const response = await api.post("/clients", data);
-    setClientInfo(response.data);
-    toast.success("Usuario criado com sucesso");
-    setTimeout(() => {
-      navigate("/");
-    }, 3000);
-  } catch (error: any) {
-    console.log(error);
-    toast.error(error.response.data.message);
-  }
-};
-const functionLogin = async (data: ILoginForm) => {
-  try {
-    const response = await api.post("/login", data);
-    console.log(response);
-    let token = localStorage.setItem("@TokenClient", response.data.token);
-    setUserLogin(response.data);
-    setClientDataAuthentication(response.data.client);
-    console.log(response.data.client);
-    navigate("/dashboard");
-  } catch (error: any) {
-    toast.error("Usuario não encontrado");
-  }
-};
-useEffect(() => {
-  // Chama a função para buscar os clientes ao fazer login
-  contactsRefresh;
-  setClientDataAuthentication;
-},);
-
-const tokenClient = localStorage.getItem("@TokenClient");
-
-const functionClientEdit = async (data: TupdateClient) => {
-  console.log(isAdmin, selectedClientId, clientDataAuthentication.id);
-  try {
-    if (isAdmin || selectedClientId == clientDataAuthentication.id) {
-      const response = await api.patch(`/clients/${selectedClientId}`, data, {
-        headers: {
-          Authorization: `Bearer ${tokenClient}`,
-        },
-      });
-
-      ClinetsRefresh();
-
-      console.log(response);
-
-      if (response.status === 200) {
-        toast.success("Cliente alterado com sucesso");
-      } else {
-        toast.error("Resposta inesperada do servidor");
-      }
-    }
-  } catch (error: any) {
-    if (error.response) {
-      console.log(error.response.status);
-      toast(error.response.data.message);
-    } else {
-      toast.error(error.message);
-      console.log(error.message);
-    }
-  }
-};
-
-const functionClientRemove = async (id: number) => {
-  try {
-    // Fazer a requisição para remover o cliente do servidor através da API
-    if (isAdmin || selectedClientId == clientDataAuthentication.id) {
-      const response = await api.delete(`/clients/${id}`, {
-        headers: {
-          Authorization: `Bearer ${tokenClient}`,
-        },
-      });
-      console.log(response);
-      // Verificar se o cliente removido é o mesmo que está selecionado
-      if (selectedClientId === id) {
-        setSelectedClientId(null);
-      }
-
-      // Atualizar a lista de clientes após a remoção
-      ClinetsRefresh();
-
-      // Exemplo de mensagem de sucesso
-      toast.success("Cliente removido com sucesso!");
-    }
-  } catch (error: any) {
-    // Lidar com erros de requisição ou exibição de mensagem de erro
-    if (error.response) {
-      console.log("Erro na requisição:", error.response.data);
+  const functionRegister = async (data: IregisterForm) => {
+    try {
+      const response = await api.post("/clients", data);
+      setClientInfo(response.data);
+      toast.success("Usuario criado com sucesso");
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
+    } catch (error: any) {
+      console.log(error);
       toast.error(error.response.data.message);
-    } else if (error.request) {
-      console.log(
-        "Erro na requisição (sem resposta do servidor):",
-        error.request
-      );
-    } else {
-      console.log("Erro:", error.message);
     }
-  }
-};
+  };
+  const functionLogin = async (data: ILoginForm) => {
+    try {
+      const response = await api.post("/login", data);
+      console.log(response);
+      let token = localStorage.setItem("@TokenClient", response.data.token);
+      setUserLogin(response.data);
+      setClientDataAuthentication(response.data.client);
+      console.log(response.data.client);
+      navigate("/dashboard");
+    } catch (error: any) {
+      toast.error("Usuario não encontrado");
+    }
+  };
+  useEffect(() => {
+    contactsRefresh;
+    setClientDataAuthentication;
+  },);
 
-return (
-  <>
-    <ClientContext.Provider
-      value={{
-        functionRegister,
-        functionLogin,
-        clientsGet,
-        contactsGet,
-        functionClientEdit,
-        functionClientRemove,
-        selectedClientId,
-        setSelectedClientId,
-        ClinetsRefresh,
-        isAdmin,
-        setIsAdmin,
-      }}
-    >
-      {children}
-    </ClientContext.Provider>
-  </>
-);
+  const tokenClient = localStorage.getItem("@TokenClient");
+
+  const functionClientEdit = async (data: TupdateClient) => {
+    console.log(isAdmin, selectedClientId, clientDataAuthentication.id);
+    try {
+      if (isAdmin || selectedClientId == clientDataAuthentication.id) {
+        const response = await api.patch(`/clients/${selectedClientId}`, data, {
+          headers: {
+            Authorization: `Bearer ${tokenClient}`,
+          },
+        });
+
+        ClinetsRefresh();
+
+        if (response.status === 200) {
+          toast.success("Cliente alterado com sucesso");
+        } else {
+          toast.error("Resposta inesperada do servidor");
+        }
+      }
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response.status);
+        toast(error.response.data.message);
+      } else {
+        toast.error(error.message);
+        console.log(error.message);
+      }
+    }
+  };
+
+  const functionClientRemove = async (id: number) => {
+    try {
+  
+      if (isAdmin || selectedClientId == clientDataAuthentication.id) {
+        const response = await api.delete(`/clients/${id}`, {
+          headers: {
+            Authorization: `Bearer ${tokenClient}`,
+          },
+        });
+        console.log(response);
+
+        if (selectedClientId === id) {
+          setSelectedClientId(null);
+        }
+
+  
+        ClinetsRefresh();
+
+        toast.success("Cliente removido com sucesso!");
+      }
+    } catch (error: any) {
+
+      if (error.response) {
+        console.log("Erro na requisição:", error.response.data);
+        toast.error(error.response.data.message);
+      } else if (error.request) {
+        console.log(
+          "Erro na requisição (sem resposta do servidor):",
+          error.request
+        );
+      } else {
+        console.log("Erro:", error.message);
+      }
+    }
+  };
+
+  return (
+    <>
+      <ClientContext.Provider
+        value={{
+          functionRegister,
+          functionLogin,
+          clientsGet,
+          contactsGet,
+          functionClientEdit,
+          functionClientRemove,
+          selectedClientId,
+          setSelectedClientId,
+          ClinetsRefresh,
+          isAdmin,
+          setIsAdmin,
+        }}
+      >
+        {children}
+      </ClientContext.Provider>
+    </>
+  );
 };

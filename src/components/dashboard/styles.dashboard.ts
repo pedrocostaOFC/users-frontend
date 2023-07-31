@@ -9,6 +9,11 @@ export const MenuContact = styled.div`
   margin-top: 20px;
 `;
 
+export const Title = styled.h1`
+  color: black;
+  font-size: 30px;
+`;
+
 export const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -24,11 +29,6 @@ export const Button = styled.button`
   cursor: pointer;
   margin-bottom: 10px;
   height: 50px;
-`;
-
-export const Title = styled.h1`
-  color: black;
-  font-size: 30px;
 `;
 
 export const ContactList = styled.ul`

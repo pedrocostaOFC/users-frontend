@@ -29,8 +29,6 @@ const Dashboard: React.FC = () => {
 
       </MenuContact>
       <PageWrapper>
-
-
         <ContactList>
           {contactsGet.map((contact) => (
             <ContactGetAll key={contact.id} contact={contact} />

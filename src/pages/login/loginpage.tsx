@@ -6,7 +6,7 @@ const LoginPage = () => (
   <>
     <LoginWrapper>
       <ContainerLogin>
-        <h1>Faça o Login</h1>
+        <h1>Login</h1>
         <LoginForm />
         <CadastroLink to="/register">Cadastre-se</CadastroLink>
       </ContainerLogin>

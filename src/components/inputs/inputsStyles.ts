@@ -14,17 +14,17 @@ export const Label = styled.label`
 
 export const InputStyle = styled.input`
   width: 100%;
-  padding: 8px;
   margin-right: 10px;
-  font-size: 16px;
+  font-size: 15px;
+  padding: 10px;
   border: 1px solid red;
-  border-radius: 4px;
+  border-radius: 3px;
   margin-top: 5px;
 
 `;
 
 export const ErrorMessage = styled.p`
   color: red;
-  font-size: 14px;
+  font-size: 15px;
   margin-top: 5px;
 `;

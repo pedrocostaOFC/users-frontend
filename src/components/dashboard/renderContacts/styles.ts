@@ -18,7 +18,7 @@ export const StyledParag = styled.p`
 export const StyledButton = styled.button`
   background-color: black;
   color: #fff;
-  padding: 10px;
+  padding: 12px;
   margin-bottom: 20px;
   border: none;
   cursor: pointer;
