@@ -43,7 +43,7 @@
   </ol>
   <pre><code>npm install</code></pre>
   <p>Após a instalação, execute o seguinte comando para iniciar a aplicação:</p>
-  <pre><code>npm start</code></pre>
+  <pre><code>npm run dev</code></pre>
   <p>Acesse a aplicação em seu navegador web através do seguinte endereço:</p>
   <pre><code>http://localhost:3000</code></pre>
   

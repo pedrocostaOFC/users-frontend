@@ -12,6 +12,8 @@ export const StyledDiv = styled.div`
 `;
 
 export const StyledParag = styled.p`
+  font-family: Arial;
+  font-weight: 600;
   margin: 5px 0;
 `;
 

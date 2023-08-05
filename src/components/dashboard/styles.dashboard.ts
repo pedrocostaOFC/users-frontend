@@ -35,9 +35,16 @@ export const ContactList = styled.ul`
   list-style-type: none;
   padding: 0;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 
   li {
-    width: 100%;
+    width: 30%;
     padding: 20px 20px;
   }
+`;
+
+export const DivContainer = styled.div`
+display: flex;
+
 `;

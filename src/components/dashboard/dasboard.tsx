@@ -3,15 +3,16 @@ import { ClientContext } from "../../providers/clientContext";
 import { ContactGetAll } from "./renderContacts/renderContact";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, ContactList, PageWrapper, Title, MenuContact } from "./styles.dashboard";
+import { Button, ContactList, PageWrapper, Title, MenuContact, DivContainer } from "./styles.dashboard";
+import CadastroContactForm from "./editClient/CadastroContactForm";
 
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { contactsGet, ClinetsRefresh } =
+  const { contactsGet, ClientsRefresh } =
     useContext(ClientContext);
   useEffect(() => {
-    async () => await ClinetsRefresh();
+    async () => await ClientsRefresh();
   }, []);
 
   function navigateLogin() {
@@ -22,12 +23,13 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <MenuContact>
-        <Title>Pagina de Clientes</Title>
+        <Title>Pagina do Clientes</Title>
         <Button type="button" onClick={navigateLogin}>
           Sair
         </Button>
-
       </MenuContact>
+    <DivContainer>
+      <CadastroContactForm/>
       <PageWrapper>
         <ContactList>
           {contactsGet.map((contact) => (
@@ -35,6 +37,7 @@ const Dashboard: React.FC = () => {
           ))}
         </ContactList>
       </PageWrapper>
+      </DivContainer>
     </>
   );
 };

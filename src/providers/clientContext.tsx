@@ -1,10 +1,11 @@
-import { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-interface IValueProps {
+// Definindo o formato das propriedades que o contexto irá fornecer
+interface IProps {
   functionRegister: (data: IregisterForm) => void;
   functionClientEdit: (data: TupdateClient) => void;
   clientsGet: Tlistclients[];
@@ -13,19 +14,23 @@ interface IValueProps {
   functionClientRemove: (id: number) => void;
   selectedClientId: number | null;
   setSelectedClientId: React.Dispatch<React.SetStateAction<number | null>>;
-  ClinetsRefresh: () => Promise<void>;
+  ClientsRefresh: () => Promise<void>;
   isAdmin: boolean;
   setIsAdmin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const ClientContext = createContext({} as IValueProps);
 
+// Criando o contexto para o cliente
+export const ClientContext = createContext({} as IProps);
+
+// Definindo os tipos de dados que serão usados
 interface iCadastroChildrenProps {
   children: React.ReactNode;
 }
 interface Ttoken {
   tokenClient: string;
 }
+
 interface IregisterForm {
   fullname: string;
   email: string;
@@ -72,20 +77,16 @@ interface clientAuthentication {
   email: string;
 }
 
-
 export interface infoContacts {
-
   id: number;
   fullname: string;
   email: string;
-  password: string;
+  telephone: string;
   zipCode: string;
   city: string;
   street: string;
   state: string;
   country: string;
-  telephone: string;
-  admin: boolean;
   createdAt?: string | Date;
 }
 
@@ -93,22 +94,19 @@ export interface infoContacts {
 export const ClientProvider = ({ children }: iCadastroChildrenProps) => {
   const navigate = useNavigate();
 
-
+  // Definindo estados iniciais
   const [useLogin, setUserLogin] = useState({} as iLoginUser);
   const [clientInfo, setClientInfo] = useState({} as infoClient[]);
-  const [clientsGet, setClientsGet] = useState([]);
+  const [clientsGet, setClientsGet] = useState<Tlistclients[]>([]);
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
   const [clientRemove, setRemoveClient] = useState();
-  const [clientDataAuthentication, setClientDataAuthentication] = useState(
-    {} as clientAuthentication
-  );
-
+  const [clientDataAuthentication, setClientDataAuthentication] =
+    useState({} as clientAuthentication);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [contactsGet, setContactsGet] = useState<infoContacts[]>([]);
 
-  const [contactsGet, setContactsGet] = useState([]);
-
-
-  const ClinetsRefresh = async () => {
+  // Função para atualizar a lista de clientes
+  const ClientsRefresh = async () => {
     try {
       const res = await api.get("/clients");
       setClientsGet(res.data);
@@ -117,26 +115,32 @@ export const ClientProvider = ({ children }: iCadastroChildrenProps) => {
     }
   };
 
+  // Função para atualizar a lista de contatos
   const contactsRefresh = async () => {
     try {
       const res = await api.get("/contacts", {
         headers: {
-          Authorization: `Bearer ${tokenClient}`
-        }
+          Authorization: `Bearer ${tokenClient}`,
+        },
       });
 
       setContactsGet(res.data);
     } catch (err) {
       console.error(err);
     }
-
   };
 
+  useEffect(() => {
+    contactsRefresh();
+    setClientDataAuthentication;
+  },[]);
+
+  // Função para cadastrar um novo cliente
   const functionRegister = async (data: IregisterForm) => {
     try {
       const response = await api.post("/clients", data);
       setClientInfo(response.data);
-      toast.success("Usuario criado com sucesso");
+      toast.success("Usuário criado com sucesso");
       setTimeout(() => {
         navigate("/");
       }, 3000);
@@ -145,6 +149,8 @@ export const ClientProvider = ({ children }: iCadastroChildrenProps) => {
       toast.error(error.response.data.message);
     }
   };
+
+  // Função para fazer login
   const functionLogin = async (data: ILoginForm) => {
     try {
       const response = await api.post("/login", data);
@@ -155,27 +161,29 @@ export const ClientProvider = ({ children }: iCadastroChildrenProps) => {
       console.log(response.data.client);
       navigate("/dashboard");
     } catch (error: any) {
-      toast.error("Usuario não encontrado");
+      toast.error("Usuário não encontrado");
     }
   };
-  useEffect(() => {
-    contactsRefresh;
-    setClientDataAuthentication;
-  },);
+
 
   const tokenClient = localStorage.getItem("@TokenClient");
 
+  // Função para editar as informações de um cliente
   const functionClientEdit = async (data: TupdateClient) => {
     console.log(isAdmin, selectedClientId, clientDataAuthentication.id);
     try {
-      if (isAdmin || selectedClientId == clientDataAuthentication.id) {
-        const response = await api.patch(`/clients/${selectedClientId}`, data, {
-          headers: {
-            Authorization: `Bearer ${tokenClient}`,
-          },
-        });
+      if (isAdmin || selectedClientId === clientDataAuthentication.id) {
+        const response = await api.patch(
+          `/clients/${selectedClientId}`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${tokenClient}`,
+            },
+          }
+        );
 
-        ClinetsRefresh();
+        ClientsRefresh();
 
         if (response.status === 200) {
           toast.success("Cliente alterado com sucesso");
@@ -194,10 +202,10 @@ export const ClientProvider = ({ children }: iCadastroChildrenProps) => {
     }
   };
 
+  // Função para remover um cliente
   const functionClientRemove = async (id: number) => {
     try {
-  
-      if (isAdmin || selectedClientId == clientDataAuthentication.id) {
+      if (isAdmin || selectedClientId === clientDataAuthentication.id) {
         const response = await api.delete(`/clients/${id}`, {
           headers: {
             Authorization: `Bearer ${tokenClient}`,
@@ -209,13 +217,11 @@ export const ClientProvider = ({ children }: iCadastroChildrenProps) => {
           setSelectedClientId(null);
         }
 
-  
-        ClinetsRefresh();
+        ClientsRefresh();
 
         toast.success("Cliente removido com sucesso!");
       }
     } catch (error: any) {
-
       if (error.response) {
         console.log("Erro na requisição:", error.response.data);
         toast.error(error.response.data.message);
@@ -230,6 +236,7 @@ export const ClientProvider = ({ children }: iCadastroChildrenProps) => {
     }
   };
 
+  // Retornando o contexto Provider com as funções e estados definidos
   return (
     <>
       <ClientContext.Provider
@@ -242,7 +249,7 @@ export const ClientProvider = ({ children }: iCadastroChildrenProps) => {
           functionClientRemove,
           selectedClientId,
           setSelectedClientId,
-          ClinetsRefresh,
+          ClientsRefresh,
           isAdmin,
           setIsAdmin,
         }}
